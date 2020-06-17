@@ -21,10 +21,12 @@ const getMixins = function (Router) {
         },
         APP: {
             onLaunch() {
+                console.log('--------- onLaunch----------');
                 uniAppHook.onLaunched = true;	// 标志已经触发了 onLaunch 事件
                 appInit.call(this, Router.$root);
             },
             onLoad() {
+                console.log('--------- onLoad----------');
                 // 第一个页面 拦截所有生命周期
                 if (uniAppHook.onLaunched && !uniAppHook.pageReady) {
                     uniAppHook.onLaunched = false;

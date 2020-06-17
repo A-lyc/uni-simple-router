@@ -1,13 +1,38 @@
 import { methods, baseConfig, Global } from '../helpers/config';
 import { noop, formatURLQuery } from '../helpers/util';
+import { warn } from '../helpers/warn';
 
 let stop = null;
+const methodsReverse = JSON.parse(JSON.stringify(methods).replace(/("\w+"):("\w+")/g, '$2:$1'));
+
+/**
+ * 处理原生 api 跳转 让其走路由守卫
+ * @param {Object} params uni api 跳转的参数
+ * @param {Boolean} useNative  是否调用原生uni api 而不是走重写过后的api
+ * @param {String} name  需要触发的uni跳转方法名称
+ */
+const nativeNav = function ({ params, useNative, name }) {
+    warn(`当前你是否调用原生的API：${useNative},true==>调用原生API，不会触发路由守卫。false==>调用原生API，会触发路由守卫。`);
+    if (useNative) {
+        return this.uniMethods[name](...params);
+    }
+    console.log(params);
+    const { $parseQuery } = this;
+    // const { url: pathQuery, ...otherParams } = params;
+    const { url: pathQuery } = params;
+    const path = pathQuery.split('?')[0];
+    const query = $parseQuery.parse($parseQuery.extract(pathQuery));
+    if (name == 'navigateBack') { // 调用api返回页面时
+
+    }
+    this[methodsReverse[name]]({ path, query: { ...query } });
+};
 
 /**
  * @param {Object} finalRoute 格式化后的路由跳转规则
  * @param {Object} NAVTYPE 需要调用的跳转方法
  */
-const uniPushTo = function (finalRoute, NAVTYPE) {
+export const uniPushTo = function (finalRoute, NAVTYPE) {
     return new Promise((resolve) => {
         const query = formatURLQuery(`?${finalRoute.uniRoute.query}`);
         const { APP } = baseConfig;
@@ -38,17 +63,12 @@ const uniPushTo = function (finalRoute, NAVTYPE) {
  *
  * this 为 Router 实例
  */
-const rewriteUniApi = function (uniMethods) {
-    const methods
-    for(let name in uniMethods){
-        this.rewritedMethods[name]=
-        uni[name]=function(param){
-
-        }
+export const rewriteUniApi = function (uniMethods) {
+    const uniMethodsKeys = Object.keys(uniMethods);
+    for (let i = 0; i < uniMethodsKeys.length; i += 1) {
+        const name = uniMethodsKeys[i];
+        uni[name] = (params, useNative = false) => {
+            nativeNav.call(this, { params, useNative, name }); // 把每个uni的原生api跳转都重写掉
+        };
     }
-};
-
-export {
-    uniPushTo,
-    rewriteUniApi,
 };

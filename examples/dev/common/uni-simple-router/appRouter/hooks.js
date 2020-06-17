@@ -78,13 +78,13 @@ export const proxyLaunchHook = function () {
         onShow,
     } = this.$options;
     uniAppHook.appVue = this;		// 缓存 当前app.vue组件对象
-    if (onLaunch.length > 1) {	// 确保有写 onLaunch 可能有其他混入 那也办法
+    if (onLaunch && onLaunch.length > 1) {	// 确保有写 onLaunch 可能有其他混入 那也办法
         uniAppHook.onLaunch.isHijack = true;
         uniAppHook.onLaunch.fun = onLaunch.splice(onLaunch.length - 1, 1, (arg) => {
             uniAppHook.onLaunch.args = arg;
         });		// 替换uni-app自带的生命周期
     }
-    if (onShow.length > 0) {
+    if (onShow && onShow.length > 0) {
         uniAppHook.onShow.isHijack = true;
         uniAppHook.onShow.fun = onShow.splice(onShow.length - 1, 1, (arg) => {
             uniAppHook.onShow.args = arg;
@@ -299,6 +299,7 @@ const isNext = function (Intercept, fnType, navCB, leaveHookCall = false) {
  */
 export const transitionTo = async function (rule, fnType, navCB, leaveHook = false) {
     await this.lifeCycle.routerbeforeHooks[0].call(this); // 触发内部跳转前的生命周期
+    debugger;
     const finalRoute = ruleToUniNavInfo(rule, this.CONFIG.routes);		// 获得到最终的 route 对象
     const _from = formatFrom(this.CONFIG.routes);	// 先根据跳转类型获取 from 数据
     const _to = formatTo(finalRoute);	// 再根据跳转类型获取 to 数据
