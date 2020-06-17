@@ -31,4 +31,24 @@ const uniPushTo = function (finalRoute, NAVTYPE) {
     });
 };
 
-export default uniPushTo;
+/**
+ * 重写掉 uni-app 的跳转方式
+ *
+ * @param {Object} uniMethods 需要重写掉的 uni-app 路由api
+ *
+ * this 为 Router 实例
+ */
+const rewriteUniApi = function (uniMethods) {
+    const methods
+    for(let name in uniMethods){
+        this.rewritedMethods[name]=
+        uni[name]=function(param){
+
+        }
+    }
+};
+
+export {
+    uniPushTo,
+    rewriteUniApi,
+};

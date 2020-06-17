@@ -4,7 +4,7 @@ import {
 } from './util';
 import { noop } from '../helpers/util';
 import { warn } from '../helpers/warn';
-import uniPushTo from './uniNav';
+import { uniPushTo } from './uniNav';
 
 let startBack = false;	// 主要是兼容低端手机返回卡 然后多次返回直接提示退出的问题
 

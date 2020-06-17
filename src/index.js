@@ -2,8 +2,9 @@ import { isH5, formatConfig, appPlatform } from './helpers/util';
 import navjump from './helpers/navJump';
 import { H5GetPageRoute } from './vueRouter/util';
 import { APPGetPageRoute } from './appRouter/util';
+import { rewriteUniApi } from './appRouter/uniNav';
 import { AppletsPageRoute } from './appletsRouter/util';
-import { lifeCycle, Global } from './helpers/config';
+import { lifeCycle, Global, uniMethods } from './helpers/config';
 import { warn, err } from './helpers/warn';
 import { registerRouterHooks, registerHook } from './lifeCycle/hooks';
 import { vueMount } from './vueRouter/base';
@@ -29,11 +30,15 @@ class Router {
         Router.$root = this;
         Global.Router = this; // 全局缓存一个对象，不必使用时都传递
         Global.$parseQuery = parseQuery;
+        this.uniMethods = uniMethods; // uni-app 原始的 跳转api
+        this.rewritedMethods = {}; // 重写后的 api 集合
         this.CONFIG = formatConfig(arg);
         this.lifeCycle = lifeCycle;
         registerRouterHooks.call(this);	// 注册全局Router生命钩子
         if (appPlatform() === 'H5') {
             H5PATCH.setLoadingStatus(this.CONFIG.h5);
+        } else if (appPlatform() === 'APP') { // 仅App才重写
+            rewriteUniApi.call(this, uniMethods);
         }
     }
 

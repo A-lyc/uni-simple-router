@@ -257,7 +257,6 @@ export const beforeHooks = function (to, from, next, Router) {
 export const triggerLifeCycle = function (Router, vueRouter) {
     const { CONFIG } = Router;
     const currRoute = vueRouter.currentRoute;
-    debugger;
     if (vueRouter.mode === 'hash') {
         const {
             query,
@@ -271,12 +270,7 @@ export const triggerLifeCycle = function (Router, vueRouter) {
         const {
             toRoute,
         } = getRouterNextInfo(currRoute, currRoute, Router);
-        let URLQuery = toRoute.query;
-        if (CONFIG.encodeURI) {
-            URLQuery = encodeURLQuery(CONFIG, {
-                query: JSON.stringify(toRoute.query),
-            }, 'history');
-        }
+        const URLQuery = encodeURLQuery(CONFIG, currRoute.query, 'history');
         vueRouter.replace({
             path: toRoute.aliasPath || toRoute.path || currRoute.path,
             query: URLQuery,

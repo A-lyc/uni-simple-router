@@ -32,6 +32,14 @@ export const baseConfig = {
     routes: [],
 };
 
+export const uniMethods = { // 缓存下uni-app的跳转 api
+    navigateTo: uni.navigateTo,
+    redirectTo: uni.redirectTo,
+    reLaunch: uni.reLaunch,
+    switchTab: uni.switchTab,
+    navigateBack: uni.navigateBack,
+};
+
 export const methods = {
     push: 'navigateTo',
     replace: 'redirectTo',
@@ -78,10 +86,6 @@ export const uniAppHook = {
     needHooks: ['onLoad', 'onReady', 'onShow', 'created', 'onHide', 'onUnload', 'onResize'],	// 首页需要拦截的生命钩子
     pageReady: false,
     onLaunched: false,	// 否触发onLaunch事件
-};
-
-export const appletsConfig = {	// 小程序端的一些路由所需配置
-    onLaunchEd: false,	// 当前小程序端是否触发onLaunch事件
 };
 
 export const route = function (object = {}) {
